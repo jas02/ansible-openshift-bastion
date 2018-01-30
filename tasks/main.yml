@@ -1,2 +1,16 @@
 ---
-# tasks file for ansible-openshift-bastion
+- name: install epel-release
+  package:
+    name: epel-release
+    state: present
+
+- name: install ansible
+  package:
+    name: ansible
+    state: present
+
+- name: checkout openshift-ansible repository
+  git:
+    repo: "{{ ob_openshift_ansible_repository }}"
+    dest: /srv/openshift-ansible
+    version: "{{ ob_openshift_version }}"
