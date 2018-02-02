@@ -1,4 +1,9 @@
 ---
+- import_tasks: configure_dns.yml
+
+- name: flush handlers
+  meta: flush_handlers
+
 - name: create /root/.ssh directory
   file:
     path: /root/.ssh
@@ -51,4 +56,3 @@
     dest: /srv/openshift-ansible
     version: "{{ ob_openshift_version }}"
 
-- import_tasks: configure_dns.yml
