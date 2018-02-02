@@ -50,3 +50,5 @@
     repo: "{{ ob_openshift_ansible_repository }}"
     dest: /srv/openshift-ansible
     version: "{{ ob_openshift_version }}"
+
+- import_tasks: configure_dns.yml
