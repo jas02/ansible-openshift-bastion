@@ -1,4 +1,9 @@
 ---
+- name: install NetworkManager
+  package:
+    name: NetworkManager
+    state: present
+
 - name: configure NetworkManager
   template:
     src: nm.conf.j2
