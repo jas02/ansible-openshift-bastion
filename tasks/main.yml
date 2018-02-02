@@ -56,3 +56,7 @@
     dest: /srv/openshift-ansible
     version: "{{ ob_openshift_version }}"
 
+- name: copy hosts-openshift-cluster file
+  copy:
+    src: "{{ ob_hosts_file }}"
+    dest: "/srv/openshift-ansible/hosts"
