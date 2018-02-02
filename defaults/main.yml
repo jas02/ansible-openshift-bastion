@@ -1,3 +1,5 @@
 ---
 ob_openshift_version: openshift-ansible-3.7.27-1
 ob_openshift_ansible_repository: https://github.com/openshift/openshift-ansible.git
+ob_dns_servers: 8.8.8.8
+ob_search_domain: example.com
