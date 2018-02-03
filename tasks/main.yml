@@ -60,3 +60,11 @@
   copy:
     src: "{{ ob_hosts_file }}"
     dest: "/srv/openshift-ansible/hosts"
+
+- name: copy htpasswd.openshift in place
+  copy:
+    src: htpasswd.openshift
+    dest: /root/htpasswd.openshift
+    owner: root
+    group: root
+    mode: 0644
