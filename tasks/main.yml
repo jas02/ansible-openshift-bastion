@@ -50,6 +50,11 @@
     name: git
     state: present
 
+- name: install httpd-tools
+  package:
+    name: httpd-tools
+    state: present
+
 - name: checkout openshift-ansible repository
   git:
     repo: "{{ ob_openshift_ansible_repository }}"
