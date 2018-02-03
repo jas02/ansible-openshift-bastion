@@ -50,6 +50,14 @@
     name: git
     state: present
 
+- name: install other required packages
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - httpd-tools
+    - java-1.8.0-openjdk-headless
+
 - name: checkout openshift-ansible repository
   git:
     repo: "{{ ob_openshift_ansible_repository }}"
