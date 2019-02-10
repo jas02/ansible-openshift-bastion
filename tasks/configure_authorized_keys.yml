@@ -4,6 +4,16 @@
   register: ssh_keys
   when: inventory_hostname in groups['bastions']
 
+- name: set ssh key variable on bastion host
+  set_fact:
+    bastion_ssh_key: "{{ ssh_keys.stdout }}"
+  when: inventory_hostname in groups['bastions']
+
+- name: set ssh key variable on other hosts
+  set_fact:
+    bastion_ssh_key: "{{ hostvars['bastion-test']['bastion_ssh_key'] }}"
+  when: inventory_hostname not in groups['bastions']
+
 - name: disable host key checking
   lineinfile:
     dest: /etc/ssh/ssh_config
@@ -14,5 +24,5 @@
   authorized_key:
     state: present
     user: root
-    key: "{{ ssh_keys.stdout }}"
+    key: "{{ bastion_ssh_key }}"
   when: inventory_hostname not in groups['bastions']
