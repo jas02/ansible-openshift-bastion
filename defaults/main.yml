@@ -1,7 +1,7 @@
 ---
 openshift_ansible_repository: https://github.com/openshift/openshift-ansible.git
 openshift_ansible_version: openshift-ansible-3.11.82-1
-ansible_version: 2.5.13
+openshift_ansible_package_version: 2.5.13
 openshift_dns_servers:
   - 8.8.8.8
   - 8.8.4.4
