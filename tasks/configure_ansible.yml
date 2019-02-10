@@ -49,14 +49,14 @@
 #    #      - "{{ ssh_keys.stdout }}"
 #    #    - "{{groups['openshift']}}"
 
-- name: install pip
-  package:
-    name: python-pip
-    state: present
-
 - name: install epel-release
   package:
     name: epel-release
+    state: present
+
+- name: install pip
+  package:
+    name: python-pip
     state: present
 
 - name: install ansible
