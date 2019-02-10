@@ -18,8 +18,8 @@
   file:
     path: "{{ openshift_bastion_user_home }}/.ssh"
     state: directory
-    owner: root
-    group: root
+    owner: "{{ openshift_bastion_user }}"
+    group: "{{ openshift_bastion_user }}"
     mode: '0700'
 
 - name: generate ssh key
@@ -27,8 +27,15 @@
   args:
     creates: '"{{ openshift_bastion_user_home }}"/.ssh/id_rsa'
 
+- name: set ownership on ansible .ssh directory and files
+  file:
+    path: "{{ openshift_bastion_user_home}}/.ssh"
+    state: directory
+    owner: "{{ openshift_bastion_user }}"
+    group: "{{ openshift_bastion_user }}"
+
 - name: fetch bastion host id_rsa.pub file content 
-  shell: cat ~/.ssh/id_rsa.pub
+  shell: "cat {{ openshift_bastion_user_home }}/.ssh/id_rsa.pub"
   register: ssh_keys
 
 - name: disable host key checking
@@ -38,12 +45,14 @@
 
 #- name: make sure bastion ssh key is in hosts authorized_keys
 #  authorized_key:
-  #    user: root
-  ##  key: "{{ item[0] }}"
-  #delegate_to: "{{ item[1] }}"
-  #with_nested:
-    #      - "{{ ssh_keys.stdout }}"
-    #    - "{{groups['openshift']}}"
+#    user: root
+#    key: "{{ ssh_keys.stdout }}"
+#  delegate_to: "localhost"
+#  with_items: "{{ groups.bastions }}"
+#
+#  #with_nested:
+#    #      - "{{ ssh_keys.stdout }}"
+#    #    - "{{groups['openshift']}}"
 
 - name: install pip
   package:
