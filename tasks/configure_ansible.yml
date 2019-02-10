@@ -28,6 +28,7 @@
     state: directory
     owner: "{{ openshift_bastion_user }}"
     group: "{{ openshift_bastion_user }}"
+    recurse: yes
 
 - name: install epel-release
   package:
