@@ -7,4 +7,4 @@ openshift_dns_servers:
   - 8.8.4.4
 openshift_search_domain: example.com
 openshift_bastion_user: ansible
-openshift_bastion_user_home: /home/"{{ openshift_bastion_user }}"
+openshift_bastion_user_home: "/home/{{ openshift_bastion_user }}"
