@@ -11,7 +11,8 @@
 
 - name: set ssh key variable on other hosts
   set_fact:
-    bastion_ssh_key: "{{ hostvars['bastion-test']['bastion_ssh_key'] }}"
+    bastion_ssh_key: "{{ hostvars[item]['bastion_ssh_key'] }}"
+  with_items: "{{ groups.bastions }}"
   when: inventory_hostname not in groups['bastions']
 
 - name: disable host key checking
