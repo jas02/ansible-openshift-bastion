@@ -1,0 +1,86 @@
+---
+- name: create ansible group
+  group:
+    name: "{{ openshift_bastion_user }}"
+
+- name: create ansible user
+  user:
+    name: "{{ openshift_bastion_user }}"
+    group: "{{ openshift_bastion_user }}"
+    home: "{{ openshift_bastion_user_home }}"
+
+- name: create ansible user .ssh directory
+  file:
+    path: "{{ openshift_bastion_user_home }}/.ssh"
+    state: directory
+    owner: "{{ openshift_bastion_user }}"
+    group: "{{ openshift_bastion_user }}"
+    mode: '0700'
+
+- name: generate ssh key
+  shell: 'ssh-keygen -b 2048 -t rsa -f "{{ openshift_bastion_user_home }}"/.ssh/id_rsa -q -N ""'
+  args:
+    creates: '"{{ openshift_bastion_user_home }}"/.ssh/id_rsa'
+
+- name: set ownership on ansible .ssh directory and files
+  file:
+    path: "{{ openshift_bastion_user_home}}/.ssh"
+    state: directory
+    owner: "{{ openshift_bastion_user }}"
+    group: "{{ openshift_bastion_user }}"
+
+- name: fetch bastion host id_rsa.pub file content 
+  shell: "cat {{ openshift_bastion_user_home }}/.ssh/id_rsa.pub"
+  register: ssh_keys
+
+- name: disable host key checking
+  lineinfile:
+    dest: /etc/ssh/ssh_config
+    line: "StrictHostKeyChecking no"
+
+#- name: make sure bastion ssh key is in hosts authorized_keys
+#  authorized_key:
+#    user: root
+#    key: "{{ ssh_keys.stdout }}"
+#  delegate_to: "localhost"
+#  with_items: "{{ groups.bastions }}"
+#
+#  #with_nested:
+#    #      - "{{ ssh_keys.stdout }}"
+#    #    - "{{groups['openshift']}}"
+
+- name: install pip
+  package:
+    name: python-pip
+    state: present
+
+- name: install epel-release
+  package:
+    name: epel-release
+    state: present
+
+- name: install ansible
+  pip:
+    name: ansible
+    version: "{{ ansible_version }}"
+    state: present
+
+- name: install git
+  package:
+    name: git
+    state: present
+
+- name: install other required packages
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - httpd-tools
+    - java-1.8.0-openjdk-headless
+    - python-passlib
+
+- name: checkout openshift-ansible repository
+  git:
+    repo: "{{ openshift_ansible_repository }}"
+    dest: "/srv/{{ openshift_ansible_version }}"
+    version: "{{ openshift_ansible_version }}"
