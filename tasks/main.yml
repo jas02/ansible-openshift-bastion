@@ -9,3 +9,4 @@
 - import_tasks: configure_ansible.yml
   when: inventory_hostname in groups['bastions']
 
+- import_tasks: configure_authorized_keys.yml

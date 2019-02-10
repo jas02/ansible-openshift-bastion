@@ -29,26 +29,6 @@
     owner: "{{ openshift_bastion_user }}"
     group: "{{ openshift_bastion_user }}"
 
-- name: fetch bastion host id_rsa.pub file content 
-  shell: "cat {{ openshift_bastion_user_home }}/.ssh/id_rsa.pub"
-  register: ssh_keys
-
-- name: disable host key checking
-  lineinfile:
-    dest: /etc/ssh/ssh_config
-    line: "StrictHostKeyChecking no"
-
-#- name: make sure bastion ssh key is in hosts authorized_keys
-#  authorized_key:
-#    user: root
-#    key: "{{ ssh_keys.stdout }}"
-#  delegate_to: "localhost"
-#  with_items: "{{ groups.bastions }}"
-#
-#  #with_nested:
-#    #      - "{{ ssh_keys.stdout }}"
-#    #    - "{{groups['openshift']}}"
-
 - name: install epel-release
   package:
     name: epel-release
