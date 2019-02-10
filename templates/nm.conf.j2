@@ -2,7 +2,7 @@
 dns=default
 
 [global-dns]
-searches={{ ob_search_domain }}
+searches={{ openshift_search_domain }}
 
 [global-dns-domain-*]
-servers={{ ob_dns_servers }}
+servers={{ openshift_dns_servers.0 }}

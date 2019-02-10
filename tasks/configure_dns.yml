@@ -1,4 +1,9 @@
 ---
+- name: set openshift dns servers variable
+  set_fact:
+    openshift_dns_servers: "{{ openshift_dns_servers + [hostvars[item]['ansible_default_ipv4']['address']] }}"
+  with_items: "{{ groups.dns }}"
+
 - name: install NetworkManager
   package:
     name: NetworkManager

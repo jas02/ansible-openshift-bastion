@@ -4,20 +4,30 @@
 - name: flush handlers
   meta: flush_handlers
 
-- name: create /root/.ssh directory
+- name: create ansible group
+  group:
+    name: "{{ openshift_bastion_user }}"
+
+- name: create ansible user
+  user:
+    name: "{{ openshift_bastion_user }}"
+    group: "{{ openshift_bastion_user }}"
+    home: "{{ openshift_bastion_user_home }}"
+
+- name: create ansible user .ssh directory
   file:
-    path: /root/.ssh
+    path: "{{ openshift_bastion_user_home }}/.ssh"
     state: directory
     owner: root
     group: root
     mode: '0700'
 
-- name: generate ssh keys on all nodes
-  shell: ssh-keygen -b 2048 -t rsa -f /root/.ssh/id_rsa -q -N ""
+- name: generate ssh key
+  shell: 'ssh-keygen -b 2048 -t rsa -f "{{ openshift_bastion_user_home }}"/.ssh/id_rsa -q -N ""'
   args:
-    creates: /root/.ssh/id_rsa
+    creates: '"{{ openshift_bastion_user_home }}"/.ssh/id_rsa'
 
-- name: fetch all servers id_rsa.pub file content 
+- name: fetch bastion host id_rsa.pub file content 
   shell: cat ~/.ssh/id_rsa.pub
   register: ssh_keys
 
@@ -26,14 +36,19 @@
     dest: /etc/ssh/ssh_config
     line: "StrictHostKeyChecking no"
 
-- name: make sure all ssh keys are in authorized_keys
-  authorized_key:
-    user: root
-    key: "{{ item[0] }}"
-  delegate_to: "{{ item[1] }}"
-  with_nested:
-        - "{{ ssh_keys.stdout }}"
-        - "{{groups['openshift']}}"
+#- name: make sure bastion ssh key is in hosts authorized_keys
+#  authorized_key:
+  #    user: root
+  ##  key: "{{ item[0] }}"
+  #delegate_to: "{{ item[1] }}"
+  #with_nested:
+    #      - "{{ ssh_keys.stdout }}"
+    #    - "{{groups['openshift']}}"
+
+- name: install pip
+  package:
+    name: python-pip
+    state: present
 
 - name: install epel-release
   package:
@@ -41,8 +56,9 @@
     state: present
 
 - name: install ansible
-  package:
+  pip:
     name: ansible
+    version: "{{ ansible_version }}"
     state: present
 
 - name: install git
@@ -61,19 +77,6 @@
 
 - name: checkout openshift-ansible repository
   git:
-    repo: "{{ ob_openshift_ansible_repository }}"
-    dest: /srv/openshift-ansible
-    version: "{{ ob_openshift_version }}"
-
-- name: copy hosts-openshift-cluster file
-  copy:
-    src: "{{ ob_hosts_file }}"
-    dest: "/srv/openshift-ansible/hosts"
-
-- name: copy htpasswd.openshift in place
-  copy:
-    src: htpasswd.openshift
-    dest: /root/htpasswd.openshift
-    owner: root
-    group: root
-    mode: 0644
+    repo: "{{ openshift_ansible_repository }}"
+    dest: "/srv/{{ openshift_ansible_version }}"
+    version: "{{ openshift_ansible_version }}"

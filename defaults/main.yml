@@ -1,5 +1,10 @@
 ---
-ob_openshift_version: openshift-ansible-3.7.27-1
-ob_openshift_ansible_repository: https://github.com/openshift/openshift-ansible.git
-ob_dns_servers: 8.8.8.8
-ob_search_domain: example.com
+openshift_ansible_repository: https://github.com/openshift/openshift-ansible.git
+openshift_ansible_version: openshift-ansible-3.11.82-1
+ansible_version: 2.5.13
+openshift_dns_servers:
+  - 8.8.8.8
+  - 8.8.4.4
+openshift_search_domain: example.com
+openshift_bastion_user: ansible
+openshift_bastion_user_home: /home/"{{ openshift_bastion_user }}"
